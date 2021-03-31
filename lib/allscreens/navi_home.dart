@@ -1,3 +1,4 @@
+import 'package:flut_app/allscreens/home_fragments/notification_frag.dart';
 import 'package:flutter/material.dart';
 
 
@@ -13,11 +14,16 @@ class MyNavigationBar extends StatefulWidget {
 
 class _MyNavigationBarState extends State<MyNavigationBar > {
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
+  List<Widget> _widgetOptions = <Widget>[
     Text('Home Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-    Text('Notifications Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-    Text('Profile Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    MyNotificationRecyclerClass(),
+  Text('Profile Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
   ];
+  /*  Text('Home Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    Text('Notifications Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    Text('Profile Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),*/
+
+
 
   void _onItemTapped(int index) {
     setState(() {
@@ -46,6 +52,7 @@ class _MyNavigationBarState extends State<MyNavigationBar > {
                 icon: Icon(Icons.notifications),
                 title: Text('Notifications'),
                 backgroundColor: Colors.orange
+
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
