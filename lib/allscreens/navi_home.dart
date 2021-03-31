@@ -1,3 +1,4 @@
+import 'package:flut_app/allscreens/home_fragments/my_profile_frag.dart';
 import 'package:flut_app/allscreens/home_fragments/notification_frag.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class _MyNavigationBarState extends State<MyNavigationBar > {
   List<Widget> _widgetOptions = <Widget>[
     Text('Home Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
     MyNotificationRecyclerClass(),
-  Text('Profile Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+    MyProfileWidget(),
   ];
   /*  Text('Home Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
     Text('Notifications Page', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
