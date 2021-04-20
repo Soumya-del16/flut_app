@@ -1,4 +1,5 @@
-import 'package:flut_app/allscreens/home_fragments/notification_data_response.dart';
+import 'file:///D:/flutterapps/flut_app/lib/allscreens/response_model_classes/notification_data_response.dart';
+import 'package:flut_app/allscreens/seperate_classes/clip_board_copy_paste.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,6 @@ class MyNotificationRecyclerClass extends StatefulWidget{
   State<StatefulWidget> createState() {
     return new _MyNotificationRecyclerClassState();
   }
-
 }
 
 class SenderDataViewModel{
@@ -48,7 +48,47 @@ class _MyNotificationRecyclerClassState extends State<MyNotificationRecyclerClas
   @override
   Widget build(BuildContext context) {
 
+    void handleClick(String value) {
+      switch (value) {
+        case 'Logout':
+          Navigator.of(context).pop();
+          break;
+        case 'Settings':
+
+        // Navigator.push(context,MaterialPageRoute(builder: (context) => HomeCopyPage());
+          break;
+        case 'Copy text' :
+         // onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeCopyPage(),
+              ),
+            );
+         // };
+          break;
+      }
+    }
+
+
+
     return Scaffold(
+      appBar:  AppBar(
+        title: Text('Notification'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {'Logout', 'Settings','Copy text'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
+      ),
       body: ListView.builder(
         itemBuilder: (context, position) {
           return Column(
@@ -84,13 +124,13 @@ class _MyNotificationRecyclerClassState extends State<MyNotificationRecyclerClas
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Text(
-                          "5m",
+                          senderDataItemslist[position].notifyTime,
                           style: TextStyle(color: Colors.grey),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Icon(
-                            Icons.star_border,
+                            Icons.notifications,
                             size: 35.0,
                             color: Colors.grey,
                           ),
@@ -110,6 +150,12 @@ class _MyNotificationRecyclerClassState extends State<MyNotificationRecyclerClas
         itemCount: senderDataItemslist.length,
       ),
     );
+
+
+
+
+
+
   }
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

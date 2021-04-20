@@ -1,30 +1,55 @@
 
 
+import 'dart:async';
+
 import 'package:flut_app/allscreens/navi_home.dart';
 import 'package:flut_app/allscreens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-
+import 'package:geolocator/geolocator.dart';
 import 'forgot_pass.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+   return new  _LoginPageState();
+  }
+
+}
+class _LoginPageState extends State<LoginPage> {
   final _formkey = GlobalKey<FormState>();
+  final List<_PositionItem> _positionItems = <_PositionItem>[];
+
+   @override
+  void initState() {
+    super.initState();
+    _pemission_for_location();
+  }
+
+  void _pemission_for_location () async{
+    await Geolocator.requestPermission().then((value) => {
+      _positionItems.add(_PositionItem(
+          _PositionItemType.permission, value.toString()))
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form (
         key: _formkey,
         child:
         Scaffold(
-          body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topCenter, colors: [Colors.yellow, Colors.orangeAccent, Colors.yellow]),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 80,),
-            Padding(
+
+          body:
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(begin: Alignment.topCenter, colors: [Colors.yellow, Colors.orangeAccent, Colors.yellow]),
+            ),
+            child: Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+              SizedBox(height: 80,),
+              Padding(
               padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,6 +195,10 @@ class LoginPage extends StatelessWidget {
                         InkWell(
                           onTap: (){
                             print("SignUp clicked");
+                          //  _permissionrequest();
+
+                            /*LocationPermissions().openAppSettings().then((bool hasOpened) =>
+                                debugPrint('App Settings opened: ' + hasOpened.toString()));*/
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => MyNavigationBar(),),
@@ -225,3 +254,15 @@ class LoginPage extends StatelessWidget {
   }
 }
 
+
+enum _PositionItemType {
+  permission,
+  position,
+}
+
+class _PositionItem {
+  _PositionItem(this.type, this.displayValue);
+
+  final _PositionItemType type;
+  final String displayValue;
+}

@@ -19,7 +19,6 @@ class MyProfileWidget extends StatefulWidget{
   State<StatefulWidget> createState() {
    return new _MyProfileWidgetState();
   }
-
 }
 
 class _MyProfileWidgetState  extends State<MyProfileWidget>
@@ -61,8 +60,7 @@ class _MyProfileWidgetState  extends State<MyProfileWidget>
     }
   }
 
-  void _onImageButtonPressed(ImageSource source,
-      {BuildContext? context}) async {
+  void _onImageButtonPressed(ImageSource source, {BuildContext? context}) async {
     if (_controller != null) {
       await _controller!.setVolume(0.0);
     }
@@ -186,7 +184,7 @@ class _MyProfileWidgetState  extends State<MyProfileWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+appBar: AppBar(title: Text('Image Retrive'),),
       body: Center(
         child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
             ? FutureBuilder<void>(
@@ -287,58 +285,28 @@ class _MyProfileWidgetState  extends State<MyProfileWidget>
 
   Future<void> _displayPickImageDialog(
       BuildContext context, OnPickImageCallback onPick) async {
-    return showDialog(
-        context: context,
+    return showDialog(context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('Add optional parameters'),
-            content: Column(
-              children: <Widget>[
-                TextField(
-                  controller: maxWidthController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration:
-                  InputDecoration(hintText: "Enter maxWidth if desired"),
+      return AlertDialog(title: Text('Add optional parameters'), content: Column(children: <Widget>[
+                TextField(controller: maxWidthController, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration:
+                InputDecoration(hintText: "Enter maxWidth if desired"),
                 ),
-                TextField(
-                  controller: maxHeightController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration:
-                  InputDecoration(hintText: "Enter maxHeight if desired"),
-                ),
-                TextField(
-                  controller: qualityController,
-                  keyboardType: TextInputType.number,
-                  decoration:
-                  InputDecoration(hintText: "Enter quality if desired"),
-                ),
-              ],
+                TextField(controller: maxHeightController, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration:
+                InputDecoration(hintText: "Enter maxHeight if desired"),),
+                TextField(controller: qualityController, keyboardType: TextInputType.number, decoration:
+                InputDecoration(hintText: "Enter quality if desired"),),],
             ),
             actions: <Widget>[
-              TextButton(
-                child: const Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                  child: const Text('PICK'),
-                  onPressed: () {
+              TextButton(child: const Text('CANCEL'), onPressed: () {
+                  Navigator.of(context).pop();},),
+              TextButton(child: const Text('PICK'), onPressed: () {
                     double? width = maxWidthController.text.isNotEmpty
-                        ? double.parse(maxWidthController.text)
-                        : null;
-                    double? height = maxHeightController.text.isNotEmpty
-                        ? double.parse(maxHeightController.text)
-                        : null;
-                    int? quality = qualityController.text.isNotEmpty
-                        ? int.parse(qualityController.text)
-                        : null;
+                        ? double.parse(maxWidthController.text) : null;
+                    double? height = maxHeightController.text.isNotEmpty ? double.parse(maxHeightController.text) : null;
+                    int? quality = qualityController.text.isNotEmpty ? int.parse(qualityController.text) : null;
                     onPick(width, height, quality);
                     Navigator.of(context).pop();
-                  }),
-            ],
-          );
-        });
+              }),],);});
   }
 }
 

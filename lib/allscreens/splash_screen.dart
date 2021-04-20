@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flut_app/allscreens/login_screen.dart';
 import 'package:flutter/material.dart';
 
+
 class SplashScreen extends StatefulWidget {
   final Color backgroundColor = Colors.white;
   final TextStyle styleTextUnderTheLoader = TextStyle(
@@ -20,6 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _loadWidget();
   }
+
 
   _loadWidget() async {
     var _duration = Duration(seconds: splashDelay);
@@ -46,38 +48,22 @@ class _SplashScreenState extends State<SplashScreen> {
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset(
+                      Text(
+                        'DigitalAddress',style: TextStyle(
+                          fontSize: 25.0, fontWeight: FontWeight.bold,color: Colors.orange),
+                      ),
+                      /*Image.asset(
                         'assets/fluttericon.png',
                         height: 300,
                         width: 300,
-                      ),
+                      ),*/
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                       ),
                     ],
                   )),
                 ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      CircularProgressIndicator(),
-                      Container(
-                        height: 10,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Spacer(),
-                            Text(_versionName),
-                            Spacer(
-                              flex: 4,
-                            ),
-                            Text('androing'),
-                            Spacer(),
-                          ])
-                    ],
-                  ),
-                ),
+
               ],
             ),
           ],
