@@ -8,14 +8,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  void handleClick(String value) {
-    switch (value) {
-      case 'Logout':
-        break;
-      case 'Settings':
-        break;
-    }
-  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

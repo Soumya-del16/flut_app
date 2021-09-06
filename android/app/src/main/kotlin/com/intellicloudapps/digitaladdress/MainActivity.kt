@@ -1,4 +1,4 @@
-package com.example.flut_app
+package com.intellicloudapps.digitaladdress
 
 import io.flutter.embedding.android.FlutterActivity
 

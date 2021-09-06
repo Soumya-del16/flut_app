@@ -1,4 +1,5 @@
-import 'file:///D:/flutterapps/flut_app/lib/allscreens/response_model_classes/tems_and_condModel_response.dart';
+
+import 'package:flut_app/allscreens/response_model_classes/tems_and_condModel_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

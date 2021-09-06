@@ -1,4 +1,5 @@
-import 'file:///D:/flutterapps/flut_app/lib/allscreens/response_model_classes/notification_data_response.dart';
+
+import 'package:flut_app/allscreens/response_model_classes/notification_data_response.dart';
 import 'package:flut_app/allscreens/seperate_classes/clip_board_copy_paste.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,15 @@ class _MyNotificationRecyclerClassState extends State<MyNotificationRecyclerClas
       ),
       body: ListView.builder(
         itemBuilder: (context, position) {
-          return Column(
+          return Card(
+              color: Theme.of(context).cardColor,
+          //RoundedRectangleBorder, BeveledRectangleBorder, StadiumBorder
+          shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(10.0),
+          top: Radius.circular(2.0)),
+          ),
+            child: Column(
             children: <Widget>[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,21 +149,18 @@ class _MyNotificationRecyclerClassState extends State<MyNotificationRecyclerClas
                   ),
                 ],
               ),
-              Divider(
+             /* Divider(
                 height: 2.0,
                 color: Colors.grey,
-              )
+              )*/
             ],
+          ),
           );
+
         },
         itemCount: senderDataItemslist.length,
       ),
     );
-
-
-
-
-
 
   }
   @override

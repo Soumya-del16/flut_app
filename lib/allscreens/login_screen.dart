@@ -1,13 +1,19 @@
 
 
-import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
-import 'package:flut_app/allscreens/navi_home.dart';
 import 'package:flut_app/allscreens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'forgot_pass.dart';
+import 'package:http/http.dart' as http;
+import 'package:flut_app/allscreens/home_fragments/home_address_frag.dart';
+import 'package:flut_app/allscreens/home_fragments/my_account_frag.dart';
+import 'package:flut_app/allscreens/home_fragments/notification_frag.dart';
+
 
 class LoginPage extends StatefulWidget{
   @override
@@ -16,9 +22,11 @@ class LoginPage extends StatefulWidget{
   }
 
 }
+late String _phone;
 class _LoginPageState extends State<LoginPage> {
-  final _formkey = GlobalKey<FormState>();
+
   final List<_PositionItem> _positionItems = <_PositionItem>[];
+
 
    @override
   void initState() {
@@ -33,13 +41,61 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  Future<List<LoginData>> loginDigiAPI(http.Client client, BuildContext context, String phone,) async {
+
+    var map = new Map<String, dynamic>();
+    map['accesskey'] = '1234';
+    map['customers_login'] = '1';
+    map['mobile'] = phone;
+    final response = await client
+        .post(Uri.parse('http://www.intellicloudapp.com/digitaladdress/digitaladdressapp.php'),body: map);
+
+    if (response.statusCode == 200){
+      print('Response code - ${response.statusCode}');
+      print('Response Body -${response.body}');
+
+      Fluttertoast.showToast(
+          msg: "Login successful",
+          toastLength: Toast.LENGTH_SHORT);
+
+      Navigator.push(context,MaterialPageRoute(builder: (context) => MyNavigationBar()),
+      );
+    }
+    else{
+      print('Response code else - ${response.statusCode}');
+      Fluttertoast.showToast(
+          msg: 'Login Failed due to  ${response.statusCode} ',
+          toastLength: Toast.LENGTH_SHORT);
+      throw Exception('Unable to fetch Address from the REST API');
+
+    }
+    // Use the compute function to run parsePhotos in a separate isolate.
+    var responseJson = json.decode(response.body);
+
+    return (responseJson['data']as List).map<LoginData>((json) => LoginData.fromJson(json)).toList();
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form (
-        key: _formkey,
-        child:
-        Scaffold(
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+    String? getErrormessage(String value) {
+      if(value.isEmpty)
+      {
+        return 'mobile cannot be blank';
+      }
+      else{
+        if (!RegExp("^[6-9]{1}[0-9]{9}").hasMatch(value)) {
+           return 'Please enter valid mobile number';
+        }
+      }
+      _phone = value;
+      return null;
+    }
+
+    return
+        Scaffold(
           body:
           Container(
             decoration: BoxDecoration(
@@ -89,9 +145,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,),
-
                 child: SingleChildScrollView(
-                  child: Padding(
+                  child:
+                  Form (
+                    key: _formKey,
+                    //autovalidate: _autoValidate,
+                    child:Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: <Widget>[
@@ -104,39 +163,12 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.only(bottom:5,left: 5,right: 5),
                           child:
                           TextFormField(
-                            keyboardType: TextInputType.text,
+                           // controller: numbercontroller,
+                            validator: (value) => value!.isEmpty ?  getErrormessage(value) : getErrormessage(value),
+                            keyboardType: TextInputType.number,
+                            maxLength: 10,
                             decoration: InputDecoration(
-                              hintText: 'Username',
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2.5),
-                                borderSide: BorderSide(
-                                    color: Colors.orangeAccent,
-                                    width: 1.0
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2.5),
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 1.0,
-                                ),
-                              ),
-                              enabledBorder:OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(2.5),
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 1.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom:5,left: 5,right: 5),
-                          child:
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Password',
+                              hintText: 'Mobile no',
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(2.5),
                                 borderSide: BorderSide(
@@ -167,11 +199,11 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 30,),
                     InkWell(
                       onTap: (){
-                        print("SignUp clicked");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MyForgotPassword()),
-                        );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyForgotPassword()),
+                          );
                       },
                       child: new Container(
                         margin: EdgeInsets.symmetric(horizontal: 20),
@@ -194,15 +226,12 @@ class _LoginPageState extends State<LoginPage> {
                         child:
                         InkWell(
                           onTap: (){
-                            print("SignUp clicked");
-                          //  _permissionrequest();
-
-                            /*LocationPermissions().openAppSettings().then((bool hasOpened) =>
-                                debugPrint('App Settings opened: ' + hasOpened.toString()));*/
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MyNavigationBar(),),
-                            );
+                            if(_formKey.currentState!.validate()){
+                              loginDigiAPI(http.Client(),context,_phone);
+                            }
+                            else{
+                              print("Unsuccessful");
+                            }
                           },
                           child: new Container(
                             child: Center(
@@ -219,14 +248,14 @@ class _LoginPageState extends State<LoginPage> {
                       child: Center(
                         child:Row(
                           children: [
-                            Text("Don't have an account?", style: TextStyle(color: Colors.grey,fontSize: 16),),
+                            Text("Don't have an account? ", style: TextStyle(color: Colors.grey,fontSize: 16),),
                             InkWell(
                               onTap: (){
-                                print("SignUp clicked");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SignUpScreen()),
-                                );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignUpScreen()),
+                                  );
                               },
                               child: new Container(
                                 child: Center(
@@ -234,7 +263,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-
                           ],
                         ),
                       ),
@@ -243,18 +271,16 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+                ),
             ),
             )
           ],
 
         ),
       ),
-        ),
     );
   }
 }
-
-
 enum _PositionItemType {
   permission,
   position,
@@ -266,3 +292,108 @@ class _PositionItem {
   final _PositionItemType type;
   final String displayValue;
 }
+
+//Login using API
+
+
+
+class LoginData {
+
+  final String fullname;
+  final String mobile;
+  final String email;
+  final String image;
+  final String city;
+  final String id;
+
+  LoginData({ required this.id,required this.fullname,required this.mobile,required this.email, required this.image, required this.city});
+
+  factory LoginData.fromJson(Map<String, dynamic> json) {
+    return LoginData(
+      id: json['id'],
+      fullname: json['fullname'] as String,
+      mobile: json['mobile'] as String,
+      email: json['email'] as String,
+      image: json['image'] as String,
+      city: json['city'] as String,
+    );
+  }
+  Map<String, dynamic> toJson() =>
+      {
+        'id' : id,
+        'fullname': fullname,
+        'mobile': mobile,
+        'email': email,
+        'image': image,
+        'city': city,
+      };
+}
+
+
+
+class MyNavigationBar extends StatefulWidget {
+  @override
+  _MyNavigationBarState createState() => _MyNavigationBarState();
+}
+
+class _MyNavigationBarState extends State<MyNavigationBar > {
+
+   int _selectedIndex = 0;
+  List<Widget> _widgetOptions = <Widget>[
+    MyAddressHomePage(_phone),
+    MyNotificationRecyclerClass(),
+    MyAccountScreen(_phone),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+@override
+  void initState() {
+  HttpOverrides.global = new MyHttpOverrides();
+
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text('Home'),
+                backgroundColor: Colors.orange
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                title: Text('Notifications'),
+                backgroundColor: Colors.orange
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('My Account'),
+              backgroundColor: Colors.orange,
+            ),
+          ],
+          type: BottomNavigationBarType.shifting,
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.black,
+          iconSize: 30,
+          onTap: _onItemTapped,
+          elevation: 3
+      ),
+    );
+  }
+
+
+}
+

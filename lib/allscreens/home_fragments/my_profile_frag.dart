@@ -16,6 +16,7 @@ import 'package:video_player/video_player.dart';
 
 class MyProfileWidget extends StatefulWidget{
   @override
+
   State<StatefulWidget> createState() {
    return new _MyProfileWidgetState();
   }
